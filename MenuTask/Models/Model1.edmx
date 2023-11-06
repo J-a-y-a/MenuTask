@@ -1,0 +1,203 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="jayaModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Menu">
+          <Key>
+            <PropertyRef Name="MenuId" />
+          </Key>
+          <Property Name="MenuId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MenuName" Type="varchar" MaxLength="50" />
+          <Property Name="IsActive" Type="bit" />
+        </EntityType>
+        <EntityType Name="TELE_CALLER_MASTER">
+          <Key>
+            <PropertyRef Name="TCM_ID" />
+          </Key>
+          <Property Name="TCM_ID" Type="varchar" MaxLength="5" Nullable="false" />
+          <Property Name="TCM_NAME" Type="varchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="USER_PERMISSIONS">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MenuId" Type="int" />
+          <Property Name="UserId" Type="varchar" MaxLength="5" />
+          <Property Name="ViewPermission" Type="bit" />
+          <Property Name="AddPermission" Type="bit" />
+          <Property Name="EditPermission" Type="bit" />
+          <Property Name="DeletePermission" Type="bit" />
+        </EntityType>
+        <Association Name="FK_USER_PERMISSIONS_Menu">
+          <End Role="Menu" Type="Self.Menu" Multiplicity="0..1" />
+          <End Role="USER_PERMISSIONS" Type="Self.USER_PERMISSIONS" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Menu">
+              <PropertyRef Name="MenuId" />
+            </Principal>
+            <Dependent Role="USER_PERMISSIONS">
+              <PropertyRef Name="MenuId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_USER_PERMISSIONS_TELE_CALLER_MASTER">
+          <End Role="TELE_CALLER_MASTER" Type="Self.TELE_CALLER_MASTER" Multiplicity="0..1" />
+          <End Role="USER_PERMISSIONS" Type="Self.USER_PERMISSIONS" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TELE_CALLER_MASTER">
+              <PropertyRef Name="TCM_ID" />
+            </Principal>
+            <Dependent Role="USER_PERMISSIONS">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="jayaModelStoreContainer">
+          <EntitySet Name="Menu" EntityType="Self.Menu" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TELE_CALLER_MASTER" EntityType="Self.TELE_CALLER_MASTER" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="USER_PERMISSIONS" EntityType="Self.USER_PERMISSIONS" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_USER_PERMISSIONS_Menu" Association="Self.FK_USER_PERMISSIONS_Menu">
+            <End Role="Menu" EntitySet="Menu" />
+            <End Role="USER_PERMISSIONS" EntitySet="USER_PERMISSIONS" />
+          </AssociationSet>
+          <AssociationSet Name="FK_USER_PERMISSIONS_TELE_CALLER_MASTER" Association="Self.FK_USER_PERMISSIONS_TELE_CALLER_MASTER">
+            <End Role="TELE_CALLER_MASTER" EntitySet="TELE_CALLER_MASTER" />
+            <End Role="USER_PERMISSIONS" EntitySet="USER_PERMISSIONS" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="jayaModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Menu">
+          <Key>
+            <PropertyRef Name="MenuId" />
+          </Key>
+          <Property Name="MenuId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MenuName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="IsActive" Type="Boolean" />
+          <NavigationProperty Name="USER_PERMISSIONS" Relationship="jayaModel.FK_USER_PERMISSIONS_Menu" FromRole="Menu" ToRole="USER_PERMISSIONS" />
+        </EntityType>
+        <EntityContainer Name="jayaEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Menus" EntityType="Self.Menu" />
+          <EntitySet Name="TELE_CALLER_MASTER" EntityType="jayaModel.TELE_CALLER_MASTER" />
+          <EntitySet Name="USER_PERMISSIONS" EntityType="jayaModel.USER_PERMISSIONS" />
+          <AssociationSet Name="FK_USER_PERMISSIONS_Menu" Association="jayaModel.FK_USER_PERMISSIONS_Menu">
+            <End Role="Menu" EntitySet="Menus" />
+            <End Role="USER_PERMISSIONS" EntitySet="USER_PERMISSIONS" />
+          </AssociationSet>
+          <AssociationSet Name="FK_USER_PERMISSIONS_TELE_CALLER_MASTER" Association="jayaModel.FK_USER_PERMISSIONS_TELE_CALLER_MASTER">
+            <End Role="TELE_CALLER_MASTER" EntitySet="TELE_CALLER_MASTER" />
+            <End Role="USER_PERMISSIONS" EntitySet="USER_PERMISSIONS" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="TELE_CALLER_MASTER">
+          <Key>
+            <PropertyRef Name="TCM_ID" />
+          </Key>
+          <Property Name="TCM_ID" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="TCM_NAME" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="USER_PERMISSIONS" Relationship="jayaModel.FK_USER_PERMISSIONS_TELE_CALLER_MASTER" FromRole="TELE_CALLER_MASTER" ToRole="USER_PERMISSIONS" />
+        </EntityType>
+        <EntityType Name="USER_PERMISSIONS">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MenuId" Type="Int32" />
+          <Property Name="UserId" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="ViewPermission" Type="Boolean" />
+          <Property Name="AddPermission" Type="Boolean" />
+          <Property Name="EditPermission" Type="Boolean" />
+          <Property Name="DeletePermission" Type="Boolean" />
+          <NavigationProperty Name="Menu" Relationship="jayaModel.FK_USER_PERMISSIONS_Menu" FromRole="USER_PERMISSIONS" ToRole="Menu" />
+          <NavigationProperty Name="TELE_CALLER_MASTER" Relationship="jayaModel.FK_USER_PERMISSIONS_TELE_CALLER_MASTER" FromRole="USER_PERMISSIONS" ToRole="TELE_CALLER_MASTER" />
+        </EntityType>
+        <Association Name="FK_USER_PERMISSIONS_Menu">
+          <End Type="jayaModel.Menu" Role="Menu" Multiplicity="0..1" />
+          <End Type="jayaModel.USER_PERMISSIONS" Role="USER_PERMISSIONS" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Menu">
+              <PropertyRef Name="MenuId" />
+            </Principal>
+            <Dependent Role="USER_PERMISSIONS">
+              <PropertyRef Name="MenuId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_USER_PERMISSIONS_TELE_CALLER_MASTER">
+          <End Type="jayaModel.TELE_CALLER_MASTER" Role="TELE_CALLER_MASTER" Multiplicity="0..1" />
+          <End Type="jayaModel.USER_PERMISSIONS" Role="USER_PERMISSIONS" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TELE_CALLER_MASTER">
+              <PropertyRef Name="TCM_ID" />
+            </Principal>
+            <Dependent Role="USER_PERMISSIONS">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="jayaModelStoreContainer" CdmEntityContainer="jayaEntities">
+          <EntitySetMapping Name="Menus">
+            <EntityTypeMapping TypeName="jayaModel.Menu">
+              <MappingFragment StoreEntitySet="Menu">
+                <ScalarProperty Name="MenuId" ColumnName="MenuId" />
+                <ScalarProperty Name="MenuName" ColumnName="MenuName" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TELE_CALLER_MASTER">
+            <EntityTypeMapping TypeName="jayaModel.TELE_CALLER_MASTER">
+              <MappingFragment StoreEntitySet="TELE_CALLER_MASTER">
+                <ScalarProperty Name="TCM_NAME" ColumnName="TCM_NAME" />
+                <ScalarProperty Name="TCM_ID" ColumnName="TCM_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="USER_PERMISSIONS">
+            <EntityTypeMapping TypeName="jayaModel.USER_PERMISSIONS">
+              <MappingFragment StoreEntitySet="USER_PERMISSIONS">
+                <ScalarProperty Name="DeletePermission" ColumnName="DeletePermission" />
+                <ScalarProperty Name="EditPermission" ColumnName="EditPermission" />
+                <ScalarProperty Name="AddPermission" ColumnName="AddPermission" />
+                <ScalarProperty Name="ViewPermission" ColumnName="ViewPermission" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="MenuId" ColumnName="MenuId" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

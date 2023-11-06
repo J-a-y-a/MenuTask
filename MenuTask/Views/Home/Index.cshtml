@@ -1,0 +1,276 @@
+﻿@*@model List<MenuTask.USER_PERMISSIONS>*@
+@*@model IEnumerable<MenuTask.Models.USER_PERMISSIONS>*@
+@model MenuTask.Models.USER_PERMISSIONS
+@{
+    /**/
+
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@*@{
+        Html.RenderPartial("PartialView");
+    }*@
+
+
+<h2>Index</h2>
+<form id="row">
+    <label style="font-size:20px;">users</label>
+    @Html.DropDownList("TCM_NAME",  new List<SelectListItem>
+                          {
+            new SelectListItem { Text = "raju", Value = "C01" },
+            new SelectListItem { Text = "rani", Value = "C02" },
+            new SelectListItem { Text = "jaya", Value = "C03" },
+            new SelectListItem { Text = "balu", Value = "C04" },
+            new SelectListItem { Text = "hari", Value = "C05" },
+            new SelectListItem { Text = "ravi", Value = "C06" },
+            new SelectListItem { Text = "shivani", Value = "C07" },
+            new SelectListItem { Text = "sai", Value = "C08" },
+
+            new SelectListItem { Text = "divya", Value = "C09" }
+
+                                  },  new { style = "width:200px;" })
+</form>
+
+@*<div class="row">*@
+<table id="tbluserpermissions" class="table table-bordered">
+    <thead>
+        @*@*<tr>
+
+                <th>@Html.DisplayNameFor(m =>m.USER_PERMISSIONS.FirstOrDefault().ViewPermission)</th>
+                <th>@Html.DisplayNameFor(m => m.USER_PERMISSIONS.FirstOrDefault().AddPermission)</th>
+                <th>@Html.DisplayNameFor(m => m.USER_PERMISSIONS.FirstOrDefault().EditPermission)</th>
+                <th>@Html.DisplayNameFor(m => m.USER_PERMISSIONS.FirstOrDefault().DeletePermission)</th>
+
+            @*</tr>*@
+
+
+        <tr>
+            <th>MENU</th>
+            <th>MENUID</th>
+            <th>VIEW</th>
+            <th>ADD</th>
+            <th>EDIT</th>
+            <th>DELETE</th>
+
+        </tr>
+    </thead>
+    <tbody class="tblmenubody"></tbody>
+    @*<tbody>
+        @foreach(var user in Model.USER)
+        {
+
+            <tr>
+
+                <td>@user.ViewPermission</td>
+                <td>@user.AddPermission</td>
+                <td>@user.EditPermission</td>
+                <td>@user.DeletePermission</td>
+            </tr>
+        }*@
+
+</table>
+
+
+
+<div class="modal-footer">
+    <button id="btnsave" class="btn btn-primary" style="float:right">Save</button>
+</div>
+@section scripts{
+    <script src="~/Scripts/jquery-3.3.1.js"></script>
+    <script src="~/Scripts/DataTables/dataTables.bootstrap.js"></script>
+    <script src="~/Scripts/DataTables/jquery.dataTables.js"></script>
+    <link href="~/Content/DataTables/css/jquery.dataTables.css" rel="stylesheet" />
+    <link href="~/Content/DataTables/css/dataTables.bootstrap.css" rel="stylesheet" />
+    <script type="text/javascript">
+        var menudata = new Array();
+        var dataTable;
+        $(document).ready(function () {
+            submit();
+            GetusersInfoTable();
+            $('#TCM_NAME').change(function () {
+                //GetRequiredData();
+                GetusersInfoTable();
+                // dataTable.ajax.reload();
+            });
+        });
+        function GetRequiredData() {
+            $('#tbluserpermissions').DataTable({
+                "destroy": true,
+                "ajax": {
+                    "url": "/Home/GetInfo",
+                    "data": function (data) {
+                        data.TCM_NAME = $('#TCM_NAME').val();
+                    },
+                    "type": "GET",
+                    "datatype": "json"
+                },
+                "columns": [
+                    { "data": "MenuName", "autoWidth": true },
+                    {
+                        "data": "ViewPermission", "autoWidth": true,
+                        "mRender": function (data, type, full, meta) {
+                            // return '<input type="checkbox" ' + (data ? ' checked' : '') + '/>';
+                            if (data == true) {
+                                return '<input type="checkbox" checked>';
+                            } else {
+                                return '<input type="checkbox">';
+                            }
+                            return data;
+                        }
+
+                    },
+                    {
+                        "data": "AddPermission", "autoWidth": true,
+
+                        "mRender": function (data, type, full, meta) {
+                            //return '<input type="checkbox" ' + (data ? ' checked' : '') + '/>';
+                            if (data == true) {
+                                return '<input type="checkbox" checked>';
+                            } else {
+                                return '<input type="checkbox">';
+                            }
+                            return data;
+
+                        }
+                    },
+                    {
+                        "data": "EditPermission", "autoWidth": true,
+                        "mRender": function (data, type, full, meta) {
+                            //return '<input type="checkbox"' + (data ? ' checked' : '') + '/>';
+                            if (data == true) {
+                                return '<input type="checkbox" checked>';
+                            } else {
+                                return '<input type="checkbox">';
+                            }
+                            return data;
+
+                        }
+                    },
+                    {
+                        "data": "DeletePermission", "autoWidth": true,
+                        "mRender": function (data, type, full, meta) {
+                            // return '<input type="checkbox" ' + (data ? ' checked' : '') + '/>';
+                            if (data == true) {
+                                return '<input type="checkbox" checked>';
+                            } else {
+                                return '<input type="checkbox">';
+                            }
+                            return data;
+
+
+                        }
+                    },
+                    //    {
+                    //    "render": function (data, type, full, meta) {
+                    //        return '<a class="btn btn-info" href="/Home/CreateEdit/' +datmenuid+ '">save</a>';
+                    //    }
+                    //},
+                ],
+
+            });
+        }
+        function GetusersInfoTable() {
+            dataTable = $.ajax({
+                "type": "Get",
+                "url": "/Home/GetInfo",
+                "data": { TCM_NAME: $('#TCM_NAME').val() },
+                "datatype": "json",
+                success: function (data) {
+                    var row = "";
+                    if (data.data.length > 0) {
+                        //var result = data.data;
+                        $.each(data.data, function (i, value) {
+                            //debugger;
+                            //var res = value.ViewPermission;
+                            row += '<tr><td>' + value.MenuName + '</td><td>' + value.MenuId + '</td><td><input type="checkbox" ' + checkboxinfo(value.ViewPermission) + '/></td><td><input type="checkbox" ' + checkboxinfo(value.AddPermission) + ' /></td><td><input type="checkbox" ' + checkboxinfo(value.EditPermission) + ' /></td><td><input type="checkbox" ' + checkboxinfo(value.DeletePermission) + ' /></td></tr>';
+                        });
+                    }
+                    else {
+                        $.each(menudata, function (i, value) {
+                            row += '<tr><td>' + value.MenuName + '</td><td>' + value.MenuId + '</td><td><input type="checkbox" id="Viewcheck"' + value.ViewPermission + '/></td><td><input type="checkbox" id="Addcheck" ' + value.AddPermission + ' /></td><td><input type="checkbox" id="Editcheck"' + value.EditPermission + ' /></td><td><input type="checkbox" id="Deletecheck"' + value.DeletePermission + ' /></td></tr>';
+                        });
+                    }
+                    $(".tblmenubody").html(row);
+                    //table.hide.col2 { display: none; }
+                    $('td:nth-child(2),th:nth-child(2)').hide();
+                }
+            });
+        }
+        function submit() {
+            $.ajax({
+                "type": "Get",
+                "url": "/Home/Menunames",
+                "dataType": "json",
+                success: function (data) {
+                    $.each(data.data, function (i, value) {
+                        menudata.push({ MenuName: value.MenuName, MenuId: value.MenuId });
+                    });
+                    //console.log(menudata);
+                },
+            });
+        }
+        function checkboxinfo(data) {
+            var check;
+            if (data == true) {
+                check = "checked";
+            }
+            else if (data == false) {
+                check = "";
+            }
+            return check;
+        }
+        $("#btnsave").click(function () {
+            GetusersInfoTable();
+            debugger;
+            var objuser = new Array();
+            $(".tblmenubody tr").each(function () {
+                //objuser.push($(this).find("td:eq(0)").text());
+                //var col1_value = $(this).find("td:eq(0)").text();
+                //var col2_value = $(this).find("td:eq(1)").find('input[type=checkbox]').prop("checked");
+                //var col3_value = $(this).find("td:eq(2)").find('input[type=checkbox]').prop("checked");
+                //var col4_value = $(this).find("td:eq(3)").find('input[type=checkbox]').prop("checked");
+                //var col5_value = $(this).find("td:eq(4)").find('input[type=checkbox]').prop("checked");
+                //var obj = {};
+                //obj.col1 = col1_value;
+                //obj.col2 = col2_value;
+                //obj.col3 = col3_value;
+                //obj.col4 = col4_value;
+                //obj.col5 = col5_value;
+                //objuser.push(obj);
+                var obj = [];
+                obj.push($(this).find("td:eq(0)").text());
+                obj.push($(this).find("td:eq(1)").text());
+                obj.push($(this).find("td:eq(2)").find('input[type=checkbox]').prop("checked"));
+                obj.push($(this).find("td:eq(3)").find('input[type=checkbox]').prop("checked"));
+                obj.push($(this).find("td:eq(4)").find('input[type=checkbox]').prop("checked"));
+                obj.push($(this).find("td:eq(5)").find('input[type=checkbox]').prop("checked"));
+                objuser.push(obj.join(','));
+            });
+            debugger;
+            $.ajax({
+                type: "POST",
+                url: "/Home/Save",
+                data: { "objuser": objuser, "user": $('#TCM_NAME').val() },
+                dataType: "json",
+                success: function (r) {
+                    alert(r);
+                    $("#TCM_NAME").val("C01");
+                    GetusersInfoTable();
+
+                }
+            });
+        });
+    </script>
+}
+
+
+
+
+
+
+
+
+
+
+
+
